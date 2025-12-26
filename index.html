@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interface de IA Gemini</title>
+  <link rel="stylesheet" href="index.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/genai": "https://esm.sh/@google/genai@^0.7.0"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="layout-wrapper">
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <button id="new-chat-btn" class="secondary-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Novo Chat
+        </button>
+      </div>
+      <div class="history-list" id="history-list">
+        <!-- Itens do histórico serão injetados aqui -->
+        <p class="history-empty">Nenhum chat anterior</p>
+      </div>
+    </aside>
+
+    <main id="app">
+      <header>
+        <div class="logo">
+          <span class="dot"></span>
+          <h1>IA Gemini</h1>
+        </div>
+        <div id="status" class="status">Pronto</div>
+      </header>
+
+      <section class="content-wrapper">
+        <div id="output" class="output-card">
+          <p class="placeholder">Digite um comando abaixo para iniciar uma conversa...</p>
+        </div>
+      </section>
+
+      <section class="input-section">
+        <form id="prompt-form" class="input-container">
+          <textarea id="prompt-input" placeholder="Pergunte algo ao Gemini..." rows="1" required></textarea>
+          <button type="submit" id="send-btn" aria-label="Enviar comando">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            <span>Enviar</span>
+          </button>
+        </form>
+      </section>
+
+      <footer>
+        <p>Desenvolvido com Gemini 3 Flash</p>
+      </footer>
+    </main>
+  </div>
+  <script type="module" src="index.tsx"></script>
+</body>
+</html>

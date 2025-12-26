@@ -1,0 +1,5 @@
+{
+  "name": " Comando ao gemini ",
+  "description": "Exemplo simples de como enviar comandos para o Gemini",
+  "requestFramePermissions": []
+}
