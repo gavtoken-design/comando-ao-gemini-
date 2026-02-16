@@ -18,6 +18,23 @@ interface HistoryItem {
   timestamp: number;
 }
 
+const PROMPT_SUGGESTIONS = [
+  "Quais são as notícias mais importantes de hoje no Brasil?",
+  "Explique como funciona a teoria da relatividade de forma simples.",
+  "Escreva um código em Python para automatizar o envio de e-mails.",
+  "Crie um roteiro de viagem de 3 dias para Buenos Aires.",
+  "Quais são os melhores restaurantes italianos em São Paulo?",
+  "Como fazer um bolo de chocolate fofinho passo a passo?",
+  "O que é computação quântica?",
+  "Resuma o livro 'Dom Casmurro' de Machado de Assis.",
+  "Dê dicas de como melhorar a produtividade no trabalho remoto.",
+  "Quais foram os vencedores do Oscar 2024?",
+  "Crie uma rotina de exercícios para iniciantes em casa.",
+  "Como aprender programação do zero em 2025?",
+  "Explique a diferença entre Gemini Flash e Gemini Pro.",
+  "Qual a cotação atual do dólar e as tendências de mercado?"
+];
+
 function initApp() {
   const elements = {
     output: document.getElementById('output'),
@@ -34,6 +51,7 @@ function initApp() {
     sourcesContainer: document.getElementById('sources-container'),
     sourcesList: document.getElementById('sources-list'),
     modelSelect: document.getElementById('model-select') as HTMLSelectElement,
+    suggestions: document.getElementById('suggestions-container'),
   };
 
   if (Object.values(elements).some(el => !el)) return;
@@ -150,6 +168,39 @@ function initApp() {
     elements.sourcesContainer!.classList.remove('hidden');
   }
 
+  // Lógica de Autocompletar
+  function updateSuggestions(value: string) {
+    if (!value || value.length < 2) {
+      elements.suggestions!.classList.add('hidden');
+      return;
+    }
+
+    const filtered = PROMPT_SUGGESTIONS.filter(s => 
+      s.toLowerCase().includes(value.toLowerCase())
+    );
+
+    if (filtered.length === 0) {
+      elements.suggestions!.classList.add('hidden');
+      return;
+    }
+
+    elements.suggestions!.innerHTML = '';
+    filtered.slice(0, 5).forEach(suggestion => {
+      const btn = document.createElement('button');
+      btn.className = 'suggestion-item';
+      btn.textContent = suggestion;
+      btn.onclick = () => {
+        elements.input!.value = suggestion;
+        elements.suggestions!.classList.add('hidden');
+        elements.input!.focus();
+        elements.input!.dispatchEvent(new Event('input')); // Redimensionar
+      };
+      elements.suggestions!.appendChild(btn);
+    });
+
+    elements.suggestions!.classList.remove('hidden');
+  }
+
   // Sidebar Mobile
   function toggleSidebar() {
     elements.sidebar!.classList.toggle('open');
@@ -167,7 +218,17 @@ function initApp() {
   elements.clearAllBtn!.onclick = clearAllHistory;
   elements.newChatBtn!.onclick = resetUI;
 
+  // Clicar fora das sugestões fecha o menu
+  document.addEventListener('click', (e) => {
+    if (!elements.suggestions!.contains(e.target as Node) && e.target !== elements.input) {
+      elements.suggestions!.classList.add('hidden');
+    }
+  });
+
   elements.input!.oninput = () => {
+    const value = elements.input!.value;
+    updateSuggestions(value);
+
     elements.input!.style.height = 'auto';
     elements.input!.style.height = Math.min(elements.input!.scrollHeight, 250) + 'px';
   };
@@ -183,6 +244,7 @@ function initApp() {
     elements.input!.value = '';
     elements.input!.style.height = 'auto';
     elements.output!.textContent = '';
+    elements.suggestions!.classList.add('hidden');
     elements.sourcesContainer!.classList.add('hidden');
     elements.status!.textContent = 'Processando...';
     elements.sendBtn!.disabled = true;
